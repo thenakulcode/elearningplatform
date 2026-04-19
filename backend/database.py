@@ -28,11 +28,19 @@ def _db_config_from_url(db_url: str):
         "connect_timeout": 10,
     }
 
-DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip() or os.getenv("MYSQL_URL", "").strip()
+IS_VERCEL = os.getenv("VERCEL") == "1"
 
 if DATABASE_URL:
     DB_CONFIG = _db_config_from_url(DATABASE_URL)
 else:
+    # In Vercel, fail fast if DB vars are missing instead of silently using localhost.
+    if IS_VERCEL and not os.getenv("DB_HOST"):
+        raise RuntimeError(
+            "Database configuration missing. Set DATABASE_URL (recommended) "
+            "or DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME in Vercel env vars."
+        )
+
     DB_CONFIG = {
         "host":        os.getenv("DB_HOST", "localhost"),
         "port":        int(os.getenv("DB_PORT", 3306)),
