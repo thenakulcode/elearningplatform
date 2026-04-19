@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses — LearnPath</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .search-bar {
+      display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;
+    }
+    .search-bar input { max-width: 360px; }
+    .filter-pills { display: flex; gap: 0.5rem; }
+    .filter-pill {
+      padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.82rem;
+      border: 1px solid var(--border); background: transparent; color: var(--text2);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .course-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .course-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--glow); }
+    .course-thumb {
+      height: 150px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+    }
+    .course-thumb.thumb-blue   { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+    .course-thumb.thumb-green  { background: linear-gradient(135deg, #059669, #34d399); }
+    .course-thumb.thumb-orange { background: linear-gradient(135deg, #d97706, #fbbf24); }
+    .course-thumb.thumb-red    { background: linear-gradient(135deg, #dc2626, #f472b6); }
+    .enrolled-ribbon {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      background: rgba(52,211,153,0.2); color: var(--success);
+      border: 1px solid var(--success); border-radius: 99px;
+      font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem;
+    }
+    .course-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+    .course-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .course-desc  { font-size: 0.83rem; color: var(--text2); flex: 1; margin-bottom: 1rem;
+                    display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;   -webkit-box-orient: vertical; overflow: hidden; }
+    .course-meta  { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+    .instructor-tag { font-size: 0.78rem; color: var(--text3); }
+    .progress-section { margin-top: auto; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text2); margin-bottom: 0.3rem; }
+    .enroll-btn { width: 100%; justify-content: center; margin-top: 0.75rem; }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">Learn<span>Path</span></div>
+  <nav>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="courses.html" class="active">📚 Courses</a>
+    <a href="progress.html">📊 Progress</a>
+  </nav>
+  <div style="margin-top:auto;">
+    <a href="#" onclick="logout()" style="color:var(--danger);">🚪 Logout</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <div>
+      <h1>Explore Courses</h1>
+      <p class="text-muted">Discover and enroll in courses tailored to your level</p>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍  Search courses..." oninput="filterCourses()">
+    <div class="filter-pills">
+      <button class="filter-pill active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-pill" onclick="setFilter('beginner', this)">Beginner</button>
+      <button class="filter-pill" onclick="setFilter('intermediate', this)">Intermediate</button>
+      <button class="filter-pill" onclick="setFilter('advanced', this)">Advanced</button>
+      <button class="filter-pill" onclick="setFilter('enrolled', this)">My Courses</button>
+    </div>
+  </div>
+
+  <div class="grid-3" id="courseGrid">
+    <div class="flex-center" style="grid-column:1/-1;padding:3rem;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  requireAuth();
+  let allCourses = [];
+  let activeFilter = 'all';
+  const thumbClasses = ['', 'thumb-blue', 'thumb-green', 'thumb-orange', 'thumb-red'];
+  const thumbEmojis  = ['🧠', '💻', '🔬', '📐', '🌍', '🎨', '📊', '⚗️'];
+
+  async function loadCourses() {
+    try {
+      allCourses = await api.courses();
+      renderCourses(allCourses);
+    } catch(e) {
+      toast(e.message, 'error');
+    }
+  }
+
+  function renderCourses(courses) {
+    const grid = document.getElementById('courseGrid');
+    if (!courses.length) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔎</div>No courses found</div>';
+      return;
+    }
+    grid.innerHTML = courses.map((c, i) => {
+      const thumb = thumbClasses[i % thumbClasses.length];
+      const emoji = thumbEmojis[i % thumbEmojis.length];
+      const diffMap = { beginner: 'beginner', intermediate: 'intermediate', advanced: 'advanced' };
+      return `
+      <div class="course-card" onclick="openCourse(${c.id}, ${c.enrolled})">
+        <div class="course-thumb ${thumb}">
+          ${emoji}
+          ${c.enrolled ? '<span class="enrolled-ribbon">✓ Enrolled</span>' : ''}
+        </div>
+        <div class="course-body">
+          <div class="course-title">${c.title}</div>
+          <div class="course-desc">${c.description || 'No description provided.'}</div>
+          <div class="course-meta">
+            <span class="badge-pill ${diffMap[c.difficulty]}">${c.difficulty}</span>
+            <span class="instructor-tag">by ${c.instructor_name || 'Instructor'}</span>
+          </div>
+          <div style="font-size:0.8rem;color:var(--text3);">${c.lesson_count} lessons</div>
+          ${c.enrolled ? `
+            <div class="progress-section">
+              <div class="progress-label">
+                <span>Progress</span><span>${c.progress}%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:${c.progress}%"></div>
+              </div>
+            </div>` : `
+            <button class="btn btn-primary enroll-btn" onclick="event.stopPropagation();enrollCourse(${c.id})">Enroll Free →</button>`
+          }
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function setFilter(filter, btn) {
+    activeFilter = filter;
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterCourses();
+  }
+
+  function filterCourses() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    let filtered = allCourses.filter(c => {
+      const matchText = c.title.toLowerCase().includes(q) || (c.description||'').toLowerCase().includes(q);
+      const matchFilter = activeFilter === 'all' ? true :
+                          activeFilter === 'enrolled' ? c.enrolled :
+                          c.difficulty === activeFilter;
+      return matchText && matchFilter;
+    });
+    renderCourses(filtered);
+  }
+
+  async function enrollCourse(id) {
+    try {
+      await api.enroll(id);
+      toast('Enrolled successfully! 🎉', 'success');
+      loadCourses();
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  function openCourse(id, enrolled) {
+    if (enrolled) window.location.href = `course.html?id=${id}`;
+    else window.location.href = `course.html?id=${id}&preview=1`;
+  }
+
+  loadCourses();
+</script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — LearnPath</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .admin-tab {
+      padding: 0.75rem 1.5rem; border: none; background: transparent;
+      color: var(--text2); font-size: 0.92rem; cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .admin-tab.active { color: var(--accent2); border-color: var(--accent); }
+    .admin-tab:hover { color: var(--text); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .data-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface); border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .data-table th {
+      background: var(--surface2); padding: 0.9rem 1.2rem;
+      text-align: left; font-size: 0.8rem; color: var(--text2);
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .data-table td {
+      padding: 0.9rem 1.2rem; font-size: 0.88rem;
+      border-top: 1px solid var(--border);
+    }
+    .data-table tr:hover td { background: rgba(108,99,255,0.04); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+    }
+    .form-card h3 { margin-bottom: 1.25rem; font-size: 1.1rem; }
+
+    .action-row { display: flex; gap: 0.5rem; }
+    .select-course-notice {
+      padding: 2rem; text-align: center; color: var(--text3);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">Learn<span>Path</span></div>
+  <nav>
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="courses.html">📚 Courses</a>
+    <a href="admin.html" class="active">⚙️ Admin</a>
+  </nav>
+  <div style="margin-top:auto;">
+    <a href="#" onclick="logout()" style="color:var(--danger);">🚪 Logout</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <div>
+      <h1>⚙️ Admin Panel</h1>
+      <p class="text-muted">Manage courses, modules, lessons and questions</p>
+    </div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchAdminTab('courses')">📚 Courses</button>
+    <button class="admin-tab" onclick="switchAdminTab('content')">✏️ Content</button>
+    <button class="admin-tab" onclick="switchAdminTab('questions')">🎯 Questions</button>
+  </div>
+
+  <!-- Courses Tab -->
+  <div class="tab-panel active" id="tab-courses">
+    <div class="two-col">
+      <div>
+        <div class="form-card mb-2">
+          <h3>➕ Create New Course</h3>
+          <div class="form-group">
+            <label>Course Title</label>
+            <input type="text" id="courseTitle" placeholder="e.g. Introduction to Python">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="courseDesc" rows="3" placeholder="Describe what students will learn…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Difficulty</label>
+            <select id="courseDiff">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Thumbnail URL (optional)</label>
+            <input type="text" id="courseThumbnail" placeholder="https://…">
+          </div>
+          <button class="btn btn-primary" onclick="createCourse()">Create Course</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="form-card">
+          <h3>📋 My Courses</h3>
+          <div id="courseTable">
+            <div class="flex-center" style="padding:2rem;"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Tab -->
+  <div class="tab-panel" id="tab-content">
+    <div class="form-card mb-2">
+      <h3>Select Course</h3>
+      <select id="contentCourseSelect" onchange="loadModules()">
+        <option value="">— Choose a course —</option>
+      </select>
+    </div>
+
+    <div id="contentArea">
+      <div class="select-course-notice">Select a course above to manage its modules and lessons</div>
+    </div>
+  </div>
+
+  <!-- Questions Tab -->
+  <div class="tab-panel" id="tab-questions">
+    <div class="two-col">
+      <div class="form-card">
+        <h3>➕ Add Question</h3>
+        <div class="form-group">
+          <label>Lesson</label>
+          <select id="qLessonSelect">
+            <option value="">— Select a lesson —</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Question</label>
+          <textarea id="qText" rows="3" placeholder="Enter your question…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="qType" onchange="renderOptionFields()">
+            <option value="mcq">Multiple Choice</option>
+            <option value="true_false">True / False</option>
+            <option value="fill">Fill in the Blank</option>
+          </select>
+        </div>
+        <div id="optionFields"></div>
+        <div class="form-group">
+          <label>Correct Answer</label>
+          <input type="text" id="qCorrect" placeholder="Exact correct answer">
+        </div>
+        <div class="form-group">
+          <label>Explanation (optional)</label>
+          <textarea id="qExplanation" rows="2" placeholder="Explain why this is correct…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Difficulty</label>
+          <select id="qDiff">
+            <option value="1">1 — Easy</option>
+            <option value="2" selected>2 — Medium</option>
+            <option value="3">3 — Hard</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="addQuestion()">Add Question</button>
+      </div>
+
+      <div class="form-card">
+        <h3>💡 Tips</h3>
+        <div style="font-size:0.88rem;color:var(--text2);line-height:1.8;">
+          <p><strong style="color:var(--text);">MCQ</strong> — Enter 2–4 options and the exact correct text.</p>
+          <p><strong style="color:var(--text);">True/False</strong> — Correct answer must be <code>True</code> or <code>False</code>.</p>
+          <p><strong style="color:var(--text);">Fill Blank</strong> — Student types the answer; matching is case-insensitive.</p>
+          <p style="margin-top:1rem;"><strong style="color:var(--accent2);">Adaptive Engine</strong> routes students to easy, medium, or hard questions based on their skill level — so add questions at all three levels for the best experience.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  const user = requireAuth();
+  if (user && user.role === 'student') {
+    toast('Access denied', 'error');
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+  }
+
+  let allCourses = [];
+
+  function switchAdminTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach((b, i) => {
+      b.classList.toggle('active',
+        ['courses','content','questions'][i] === tab);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+  }
+
+  async function loadAdminCourses() {
+    try {
+      const data = await api.adminCourses();
+      allCourses = data;
+      renderCourseTable(data);
+      populateCourseSelects(data);
+    } catch(e) {
+      toast(e.message, 'error');
+    }
+  }
+
+  function renderCourseTable(courses) {
+    const container = document.getElementById('courseTable');
+    if (!courses.length) {
+      container.innerHTML = '<p class="text-muted" style="padding:1rem;">No courses yet. Create one above!</p>';
+      return;
+    }
+    container.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Difficulty</th>
+            <th>Lessons</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${courses.map(c => `
+            <tr>
+              <td><strong>${c.title}</strong></td>
+              <td>
+                <span class="badge-pill ${c.difficulty}">${c.difficulty}</span>
+              </td>
+              <td style="color:var(--text2);">${c.lesson_count} lessons</td>
+              <td>
+                <span style="color:${c.is_published ? 'var(--success)' : 'var(--text3)'};">
+                  ${c.is_published ? '✅ Published' : '⬜ Draft'}
+                </span>
+              </td>
+              <td>
+                <button
+                  class="btn ${c.is_published ? 'btn-danger' : 'btn-success'}"
+                  style="font-size:0.78rem; padding:0.4rem 1rem;"
+                  onclick="togglePublish(${c.id})">
+                  ${c.is_published ? '🔴 Unpublish' : '🟢 Publish'}
+                </button>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+  function populateCourseSelects(courses) {
+    const sel = document.getElementById('contentCourseSelect');
+    sel.innerHTML = '<option value="">— Choose a course —</option>' +
+      courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+  }
+
+  async function createCourse() {
+    const title = document.getElementById('courseTitle').value.trim();
+    const description = document.getElementById('courseDesc').value.trim();
+    const difficulty = document.getElementById('courseDiff').value;
+    const thumbnail_url = document.getElementById('courseThumbnail').value.trim();
+    if (!title) return toast('Title is required', 'error');
+    try {
+      await api.createCourse({ title, description, difficulty, thumbnail_url });
+      toast('Course created! 🎉', 'success');
+      document.getElementById('courseTitle').value = '';
+      document.getElementById('courseDesc').value = '';
+      loadAdminCourses();
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  async function togglePublish(id) {
+    try {
+      const res = await api.publishCourse(id);
+      toast(
+        res.is_published
+          ? '✅ Course published! Students can now see it.'
+          : '⬜ Course moved to Draft.',
+        'info'
+      );
+      loadAdminCourses();   // refresh the table
+    } catch(e) {
+      toast(e.message, 'error');
+    }
+  }
+
+  // Content tab
+  let selectedCourseModules = [];
+
+  async function loadModules() {
+    const courseId = document.getElementById('contentCourseSelect').value;
+    if (!courseId) return;
+    try {
+      const course = await api.course(courseId);
+      selectedCourseModules = course.modules;
+      renderContentArea(course);
+      populateLessonSelect(course.modules);
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  function renderContentArea(course) {
+    document.getElementById('contentArea').innerHTML = `
+      <div class="two-col">
+        <div class="form-card">
+          <h3>➕ Add Module</h3>
+          <div class="form-group">
+            <label>Module Title</label>
+            <input type="text" id="modTitle" placeholder="e.g. Getting Started">
+          </div>
+          <button class="btn btn-primary" onclick="addModule(${course.id})">Add Module</button>
+        </div>
+
+        <div class="form-card">
+          <h3>📋 Modules & Lessons</h3>
+          <div id="moduleTree">
+            ${course.modules.length ? course.modules.map(m => `
+              <div style="margin-bottom:1.25rem;">
+                <div style="font-weight:700;margin-bottom:0.5rem;color:var(--accent2);">📁 ${m.title}</div>
+                ${m.lessons.map(l => `
+                  <div style="padding:0.4rem 0.5rem 0.4rem 1.25rem;border-left:2px solid var(--border);
+                              font-size:0.85rem;margin-bottom:0.25rem;color:var(--text2);">
+                    📄 ${l.title}
+                  </div>`).join('')}
+                <div style="padding-left:1.25rem;margin-top:0.4rem;">
+                  <button class="btn btn-outline" style="font-size:0.78rem;padding:0.3rem 0.8rem;"
+                    onclick="showAddLesson(${m.id})">+ Add Lesson</button>
+                </div>
+              </div>`).join('') : '<p class="text-muted">No modules yet</p>'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Add lesson form (hidden by default) -->
+      <div class="form-card mt-2 hidden" id="addLessonForm">
+        <h3>➕ Add Lesson to Module <span id="addLessonModTitle"></span></h3>
+        <div class="two-col">
+          <div>
+            <div class="form-group">
+              <label>Lesson Title</label>
+              <input type="text" id="lessonTitle" placeholder="e.g. Variables and Types">
+            </div>
+            <div class="form-group">
+              <label>Video URL (optional)</label>
+              <input type="text" id="lessonVideo" placeholder="YouTube or direct MP4 URL">
+            </div>
+            <div class="form-group">
+              <label>XP Reward</label>
+              <input type="number" id="lessonXP" value="10" min="5" max="100">
+            </div>
+          </div>
+          <div>
+            <div class="form-group" style="height:100%;">
+              <label>Content (Markdown supported)</label>
+              <textarea id="lessonContent" rows="6" placeholder="## Lesson Title&#10;&#10;Content here…" style="height:calc(100% - 2rem);resize:vertical;"></textarea>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <button class="btn btn-primary" onclick="addLesson()">Add Lesson</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('addLessonForm').classList.add('hidden')">Cancel</button>
+        </div>
+      </div>`;
+  }
+
+  let currentModuleId = null;
+
+  function showAddLesson(moduleId) {
+    currentModuleId = moduleId;
+    const form = document.getElementById('addLessonForm');
+    form.classList.remove('hidden');
+    form.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function addModule(courseId) {
+    const title = document.getElementById('modTitle').value.trim();
+    if (!title) return toast('Module title required', 'error');
+    try {
+      await api.addModule(courseId, { title, order_num: 0 });
+      toast('Module added!', 'success');
+      document.getElementById('modTitle').value = '';
+      loadModules();
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  async function addLesson() {
+    if (!currentModuleId) return toast('No module selected', 'error');
+    const title   = document.getElementById('lessonTitle').value.trim();
+    const content = document.getElementById('lessonContent').value;
+    const video_url = document.getElementById('lessonVideo').value.trim();
+    const xp_reward = parseInt(document.getElementById('lessonXP').value) || 10;
+    if (!title) return toast('Lesson title required', 'error');
+    try {
+      await api.addLesson(currentModuleId, { title, content, video_url, xp_reward, order_num: 0 });
+      toast('Lesson added! ✅', 'success');
+      document.getElementById('lessonTitle').value = '';
+      document.getElementById('lessonContent').value = '';
+      document.getElementById('lessonVideo').value = '';
+      document.getElementById('addLessonForm').classList.add('hidden');
+      loadModules();
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  // Questions tab
+  function populateLessonSelect(modules) {
+    const sel = document.getElementById('qLessonSelect');
+    sel.innerHTML = '<option value="">— Select a lesson —</option>';
+    modules.forEach(m => {
+      m.lessons.forEach(l => {
+        sel.innerHTML += `<option value="${l.id}">${m.title} › ${l.title}</option>`;
+      });
+    });
+  }
+
+  function renderOptionFields() {
+    const type = document.getElementById('qType').value;
+    const container = document.getElementById('optionFields');
+    if (type === 'mcq') {
+      container.innerHTML = `
+        <div class="form-group"><label>Option A</label><input type="text" id="opt0" placeholder="Option A"></div>
+        <div class="form-group"><label>Option B</label><input type="text" id="opt1" placeholder="Option B"></div>
+        <div class="form-group"><label>Option C</label><input type="text" id="opt2" placeholder="Option C (optional)"></div>
+        <div class="form-group"><label>Option D</label><input type="text" id="opt3" placeholder="Option D (optional)"></div>`;
+    } else {
+      container.innerHTML = '';
+    }
+  }
+
+  async function addQuestion() {
+    const lesson_id = parseInt(document.getElementById('qLessonSelect').value);
+    if (!lesson_id) return toast('Select a lesson', 'error');
+    const question = document.getElementById('qText').value.trim();
+    if (!question) return toast('Question text required', 'error');
+    const type = document.getElementById('qType').value;
+    const correct = document.getElementById('qCorrect').value.trim();
+    if (!correct) return toast('Correct answer required', 'error');
+    const explanation = document.getElementById('qExplanation').value.trim();
+    const difficulty = parseInt(document.getElementById('qDiff').value);
+
+    let options = null;
+    if (type === 'mcq') {
+      options = ['opt0','opt1','opt2','opt3']
+        .map(id => document.getElementById(id)?.value.trim())
+        .filter(Boolean);
+      if (options.length < 2) return toast('Add at least 2 options', 'error');
+    }
+
+    try {
+      await api.addQuestion(lesson_id, { question, type, options, correct, explanation, difficulty });
+      toast('Question added! 🎯', 'success');
+      document.getElementById('qText').value = '';
+      document.getElementById('qCorrect').value = '';
+      document.getElementById('qExplanation').value = '';
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  // Init
+  renderOptionFields();
+  loadAdminCourses();
+</script>
+</body>
+</html>

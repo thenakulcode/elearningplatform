@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="680" height="1420" viewBox="0 0 680 1420" xmlns="http://www.w3.org/2000/svg" role="img" style="background:#ffffff;font-family:Arial,sans-serif;">
+<title>ER Diagram — Adaptive Learning Platform</title>
+<desc>Entity relationship diagram showing all 11 tables and their relationships</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- ─── USERS ─────────────────────────────────────────────── -->
+<rect x="240" y="20" width="200" height="186" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.8"/>
+<rect x="240" y="20" width="200" height="32" rx="8" fill="#534AB7"/>
+<rect x="240" y="44" width="200" height="8" fill="#534AB7"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="340" y="40" text-anchor="middle" dominant-baseline="central">USERS</text>
+<line x1="240" y1="52" x2="440" y2="52" stroke="#AFA9EC" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="66" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="82" dominant-baseline="central">name</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="98" dominant-baseline="central">email (unique)</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="114" dominant-baseline="central">password_hash</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="130" dominant-baseline="central">role ENUM(admin/instructor/student)</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="146" dominant-baseline="central">avatar_url</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="162" dominant-baseline="central">created_at</text>
+<text font-family="Arial" font-size="11" fill="#3C3489" x="256" y="178" dominant-baseline="central">updated_at</text>
+
+<!-- ─── COURSES ────────────────────────────────────────────── -->
+<rect x="20" y="270" width="190" height="172" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+<rect x="20" y="270" width="190" height="32" rx="8" fill="#0F6E56"/>
+<rect x="20" y="294" width="190" height="8" fill="#0F6E56"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="115" y="286" text-anchor="middle" dominant-baseline="central">COURSES</text>
+<line x1="20" y1="302" x2="210" y2="302" stroke="#5DCAA5" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="318" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="334" dominant-baseline="central">title</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="350" dominant-baseline="central">description</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="366" dominant-baseline="central">thumbnail_url</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="382" dominant-baseline="central">difficulty ENUM</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="398" dominant-baseline="central">🔗 instructor_id (FK→users)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="414" dominant-baseline="central">is_published</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="430" dominant-baseline="central">created_at</text>
+
+<!-- ─── LEARNER_PROFILES ──────────────────────────────────── -->
+<rect x="470" y="270" width="190" height="204" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8"/>
+<rect x="470" y="270" width="190" height="32" rx="8" fill="#185FA5"/>
+<rect x="470" y="294" width="190" height="8" fill="#185FA5"/>
+<text font-family="Arial" font-size="12" font-weight="bold" fill="#ffffff" x="565" y="286" text-anchor="middle" dominant-baseline="central">LEARNER_PROFILES</text>
+<line x1="470" y1="302" x2="660" y2="302" stroke="#85B7EB" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="318" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="334" dominant-baseline="central">🔗 user_id (FK, unique)</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="350" dominant-baseline="central">skill_level (float 0-1)</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="366" dominant-baseline="central">learning_speed</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="382" dominant-baseline="central">weak_topics (JSON)</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="398" dominant-baseline="central">strong_topics (JSON)</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="414" dominant-baseline="central">preferred_type ENUM</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="430" dominant-baseline="central">total_xp</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="446" dominant-baseline="central">streak_days</text>
+<text font-family="Arial" font-size="11" fill="#0C447C" x="484" y="462" dominant-baseline="central">last_active</text>
+
+<!-- ─── MODULES ────────────────────────────────────────────── -->
+<rect x="20" y="510" width="190" height="108" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+<rect x="20" y="510" width="190" height="32" rx="8" fill="#0F6E56"/>
+<rect x="20" y="534" width="190" height="8" fill="#0F6E56"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="115" y="526" text-anchor="middle" dominant-baseline="central">MODULES</text>
+<line x1="20" y1="542" x2="210" y2="542" stroke="#5DCAA5" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="558" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="574" dominant-baseline="central">🔗 course_id (FK→courses)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="590" dominant-baseline="central">title</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="606" dominant-baseline="central">order_num</text>
+
+<!-- ─── ENROLLMENTS ───────────────────────────────────────── -->
+<rect x="245" y="510" width="190" height="108" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="245" y="510" width="190" height="32" rx="8" fill="#993C1D"/>
+<rect x="245" y="534" width="190" height="8" fill="#993C1D"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="340" y="526" text-anchor="middle" dominant-baseline="central">ENROLLMENTS</text>
+<line x1="245" y1="542" x2="435" y2="542" stroke="#F0997B" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="558" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="574" dominant-baseline="central">🔗 user_id (FK→users)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="590" dominant-baseline="central">🔗 course_id (FK→courses)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="606" dominant-baseline="central">enrolled_at</text>
+
+<!-- ─── USER_BADGES ───────────────────────────────────────── -->
+<rect x="470" y="510" width="190" height="108" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.8"/>
+<rect x="470" y="510" width="190" height="32" rx="8" fill="#854F0B"/>
+<rect x="470" y="534" width="190" height="8" fill="#854F0B"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="565" y="526" text-anchor="middle" dominant-baseline="central">USER_BADGES</text>
+<line x1="470" y1="542" x2="660" y2="542" stroke="#EF9F27" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="558" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="574" dominant-baseline="central">🔗 user_id (FK→users)</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="590" dominant-baseline="central">🔗 badge_id (FK→badges)</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="606" dominant-baseline="central">earned_at</text>
+
+<!-- ─── LESSONS ───────────────────────────────────────────── -->
+<rect x="20" y="690" width="190" height="156" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+<rect x="20" y="690" width="190" height="32" rx="8" fill="#0F6E56"/>
+<rect x="20" y="714" width="190" height="8" fill="#0F6E56"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="115" y="706" text-anchor="middle" dominant-baseline="central">LESSONS</text>
+<line x1="20" y1="722" x2="210" y2="722" stroke="#5DCAA5" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="738" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="754" dominant-baseline="central">🔗 module_id (FK→modules)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="770" dominant-baseline="central">title</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="786" dominant-baseline="central">content (LONGTEXT)</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="802" dominant-baseline="central">video_url</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="818" dominant-baseline="central">order_num</text>
+<text font-family="Arial" font-size="11" fill="#085041" x="34" y="834" dominant-baseline="central">xp_reward</text>
+
+<!-- ─── BADGES ─────────────────────────────────────────────── -->
+<rect x="470" y="690" width="190" height="140" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.8"/>
+<rect x="470" y="690" width="190" height="32" rx="8" fill="#854F0B"/>
+<rect x="470" y="714" width="190" height="8" fill="#854F0B"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="565" y="706" text-anchor="middle" dominant-baseline="central">BADGES</text>
+<line x1="470" y1="722" x2="660" y2="722" stroke="#EF9F27" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="738" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="754" dominant-baseline="central">name</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="770" dominant-baseline="central">description</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="786" dominant-baseline="central">icon</text>
+<text font-family="Arial" font-size="11" fill="#412402" x="484" y="802" dominant-baseline="central">condition_text</text>
+
+<!-- ─── QUESTIONS ─────────────────────────────────────────── -->
+<rect x="20" y="920" width="190" height="172" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="20" y="920" width="190" height="32" rx="8" fill="#993C1D"/>
+<rect x="20" y="944" width="190" height="8" fill="#993C1D"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="115" y="936" text-anchor="middle" dominant-baseline="central">QUESTIONS</text>
+<line x1="20" y1="952" x2="210" y2="952" stroke="#F0997B" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="968" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="984" dominant-baseline="central">🔗 lesson_id (FK→lessons)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="1000" dominant-baseline="central">question (TEXT)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="1016" dominant-baseline="central">type ENUM(mcq/tf/fill)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="1032" dominant-baseline="central">options (JSON)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="1048" dominant-baseline="central">correct</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="1064" dominant-baseline="central">explanation</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="34" y="1080" dominant-baseline="central">difficulty (1/2/3)</text>
+
+<!-- ─── LESSON_PROGRESS ───────────────────────────────────── -->
+<rect x="245" y="920" width="190" height="140" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="245" y="920" width="190" height="32" rx="8" fill="#993C1D"/>
+<rect x="245" y="944" width="190" height="8" fill="#993C1D"/>
+<text font-family="Arial" font-size="12" font-weight="bold" fill="#ffffff" x="340" y="936" text-anchor="middle" dominant-baseline="central">LESSON_PROGRESS</text>
+<line x1="245" y1="952" x2="435" y2="952" stroke="#F0997B" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="968" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="984" dominant-baseline="central">🔗 user_id (FK→users)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="1000" dominant-baseline="central">🔗 lesson_id (FK→lessons)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="1016" dominant-baseline="central">completed (BOOLEAN)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="1032" dominant-baseline="central">time_spent_s</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="259" y="1048" dominant-baseline="central">completed_at</text>
+
+<!-- ─── QUIZ_ATTEMPTS ─────────────────────────────────────── -->
+<rect x="470" y="920" width="190" height="172" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.8"/>
+<rect x="470" y="920" width="190" height="32" rx="8" fill="#993C1D"/>
+<rect x="470" y="944" width="190" height="8" fill="#993C1D"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#ffffff" x="565" y="936" text-anchor="middle" dominant-baseline="central">QUIZ_ATTEMPTS</text>
+<line x1="470" y1="952" x2="660" y2="952" stroke="#F0997B" stroke-width="0.5"/>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="968" dominant-baseline="central">🔑 id (PK)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="984" dominant-baseline="central">🔗 user_id (FK→users)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="1000" dominant-baseline="central">🔗 lesson_id (FK→lessons)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="1016" dominant-baseline="central">score (FLOAT)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="1032" dominant-baseline="central">total_q</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="1048" dominant-baseline="central">correct_q</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="1064" dominant-baseline="central">answers (JSON)</text>
+<text font-family="Arial" font-size="11" fill="#4A1B0C" x="484" y="1080" dominant-baseline="central">attempted_at</text>
+
+<!-- ═══════════════ RELATIONSHIP LINES ═══════════════════════ -->
+<!-- USERS → COURSES (1 to many) -->
+<path d="M240 113 L115 113 L115 270" fill="none" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#0F6E56" x="68" y="192" text-anchor="middle">instructs</text>
+<text font-family="Arial" font-size="10" fill="#0F6E56" x="68" y="204" text-anchor="middle">(1 to many)</text>
+
+<!-- USERS → LEARNER_PROFILES (1 to 1) -->
+<path d="M440 113 L565 113 L565 270" fill="none" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#185FA5" x="608" y="192" text-anchor="middle">has profile</text>
+<text font-family="Arial" font-size="10" fill="#185FA5" x="608" y="204" text-anchor="middle">(1 to 1)</text>
+
+<!-- USERS → ENROLLMENTS -->
+<path d="M340 206 L340 510" fill="none" stroke="#993C1D" stroke-width="1.3" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#993C1D" x="358" y="365" text-anchor="start">enrolls</text>
+<text font-family="Arial" font-size="10" fill="#993C1D" x="358" y="377" text-anchor="start">(1 to many)</text>
+
+<!-- USERS → USER_BADGES -->
+<path d="M440 160 L455 160 L455 490 L470 490 L470 510" fill="none" stroke="#854F0B" stroke-width="1.3" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#854F0B" x="457" y="440" text-anchor="start">earns</text>
+
+<!-- USERS → LESSON_PROGRESS (dashed) -->
+<path d="M290 206 L290 895 L300 920" fill="none" stroke="#993C1D" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+<!-- USERS → QUIZ_ATTEMPTS (dashed) -->
+<path d="M430 206 L430 895 L520 920" fill="none" stroke="#993C1D" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+<!-- COURSES → MODULES (1 to many) -->
+<path d="M115 442 L115 510" fill="none" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#0F6E56" x="120" y="480" text-anchor="start">contains</text>
+
+<!-- COURSES → ENROLLMENTS (dashed) -->
+<path d="M210 356 L245 356 L245 510" fill="none" stroke="#993C1D" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+<!-- MODULES → LESSONS (1 to many) -->
+<path d="M115 618 L115 690" fill="none" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#0F6E56" x="120" y="658" text-anchor="start">contains</text>
+
+<!-- LESSONS → QUESTIONS (1 to many) -->
+<path d="M115 846 L115 920" fill="none" stroke="#993C1D" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#993C1D" x="120" y="886" text-anchor="start">has questions</text>
+
+<!-- LESSONS → LESSON_PROGRESS (dashed) -->
+<path d="M175 846 L175 895 L300 920" fill="none" stroke="#993C1D" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+<!-- LESSONS → QUIZ_ATTEMPTS (dashed) -->
+<path d="M210 790 L450 790 L450 920" fill="none" stroke="#993C1D" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+<!-- BADGES → USER_BADGES (1 to many) -->
+<path d="M565 830 L565 910 L565 910" fill="none" stroke="#854F0B" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="10" fill="#854F0B" x="570" y="875" text-anchor="start">awarded as</text>
+
+<!-- ─── LEGEND ─────────────────────────────────────────────── -->
+<rect x="20" y="1155" width="640" height="240" rx="10" fill="#F8F8F8" stroke="#CCCCCC" stroke-width="0.8"/>
+<text font-family="Arial" font-size="13" font-weight="bold" fill="#333333" x="340" y="1178" text-anchor="middle" dominant-baseline="central">Legend</text>
+<line x1="20" y1="1188" x2="660" y2="1188" stroke="#CCCCCC" stroke-width="0.5"/>
+
+<rect x="40" y="1200" width="14" height="14" rx="3" fill="#534AB7"/>
+<text font-family="Arial" font-size="11" fill="#333" x="62" y="1207" dominant-baseline="central">USERS — core entity (authentication + roles)</text>
+
+<rect x="40" y="1222" width="14" height="14" rx="3" fill="#0F6E56"/>
+<text font-family="Arial" font-size="11" fill="#333" x="62" y="1229" dominant-baseline="central">COURSES / MODULES / LESSONS — content delivery hierarchy</text>
+
+<rect x="40" y="1244" width="14" height="14" rx="3" fill="#993C1D"/>
+<text font-family="Arial" font-size="11" fill="#333" x="62" y="1251" dominant-baseline="central">ENROLLMENTS / QUESTIONS / LESSON_PROGRESS / QUIZ_ATTEMPTS — activity tracking</text>
+
+<rect x="40" y="1266" width="14" height="14" rx="3" fill="#185FA5"/>
+<text font-family="Arial" font-size="11" fill="#333" x="62" y="1273" dominant-baseline="central">LEARNER_PROFILES — adaptive engine (skill level, XP, streak, weak/strong topics)</text>
+
+<rect x="40" y="1288" width="14" height="14" rx="3" fill="#854F0B"/>
+<text font-family="Arial" font-size="11" fill="#333" x="62" y="1295" dominant-baseline="central">BADGES / USER_BADGES — gamification system</text>
+
+<line x1="40" y1="1325" x2="90" y2="1325" stroke="#0F6E56" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="11" fill="#333" x="98" y="1325" dominant-baseline="central">Solid line = direct FK relationship (one-to-many)</text>
+
+<line x1="40" y1="1350" x2="90" y2="1350" stroke="#993C1D" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+<text font-family="Arial" font-size="11" fill="#333" x="98" y="1350" dominant-baseline="central">Dashed line = junction / activity relationship</text>
+
+<text font-family="Arial" font-size="11" fill="#555" x="40" y="1378" dominant-baseline="central">🔑 PK = Primary Key    🔗 FK = Foreign Key    11 tables total</text>
+</svg>

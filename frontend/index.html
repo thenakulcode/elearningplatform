@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnPath — Adaptive Learning</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body { display: flex; align-items: stretch; min-height: 100vh; }
+
+    .auth-hero {
+      flex: 1;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(108,99,255,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(56,189,248,0.10) 0%, transparent 50%),
+        var(--bg2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.2;
+      pointer-events: none;
+    }
+    .orb-1 { width:400px; height:400px; background: var(--accent);  top:-100px; right:-100px; }
+    .orb-2 { width:300px; height:300px; background: var(--accent3); bottom:-80px; left:-80px; }
+
+    .hero-content { position: relative; z-index: 1; max-width: 440px; text-align: center; }
+    .hero-logo { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; }
+    .hero-logo span { color: var(--accent2); }
+    .hero-content h2 { font-size: 2.6rem; margin-bottom: 1rem; line-height: 1.15; }
+    .hero-content p  { color: var(--text2); font-size: 1.05rem; }
+
+    .feature-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 2.5rem; text-align: left; }
+    .feat-item { display: flex; align-items: center; gap: 0.75rem; }
+    .feat-icon { font-size: 1.3rem; }
+    .feat-text { font-size: 0.92rem; color: var(--text2); }
+    .feat-text strong { color: var(--text); }
+
+    .auth-panel {
+      width: 460px;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2.5rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .auth-box { width: 100%; max-width: 380px; }
+    .auth-box h2 { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .auth-box .subtitle { color: var(--text2); font-size: 0.92rem; margin-bottom: 2rem; }
+
+    .tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 2rem; overflow: hidden; }
+    .tab-btn {
+      flex: 1; padding: 0.7rem; background: transparent; border: none;
+      color: var(--text2); font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .tab-btn.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+    .auth-form { display: none; }
+    .auth-form.active { display: block; }
+
+    .role-select { display: flex; gap: 0.75rem; margin-bottom: 1.2rem; }
+    .role-option { flex: 1; }
+    .role-option input { display: none; }
+    .role-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+      color: var(--text2);
+    }
+    .role-option label .role-icon { font-size: 1.5rem; }
+    .role-option input:checked + label { border-color: var(--accent); background: rgba(108,99,255,0.1); color: var(--text); }
+
+    .auth-btn { width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center; margin-top: 0.5rem; }
+    .auth-divider { text-align: center; color: var(--text3); font-size: 0.85rem; margin: 1.2rem 0; }
+
+    @media (max-width: 900px) {
+      .auth-hero { display: none; }
+      .auth-panel { width: 100%; border: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="auth-hero">
+  <div class="hero-orb orb-1"></div>
+  <div class="hero-orb orb-2"></div>
+  <div class="hero-content">
+    <div class="hero-logo">Learn<span>Path</span></div>
+    <h2>Learn Smarter, Not Harder</h2>
+    <p>An AI-powered platform that adapts to your unique learning style and pace.</p>
+    <div class="feature-list">
+      <div class="feat-item">
+        <span class="feat-icon">🧠</span>
+        <div class="feat-text"><strong>Adaptive Engine</strong> — Questions and content adjust to your skill level</div>
+      </div>
+      <div class="feat-item">
+        <span class="feat-icon">📈</span>
+        <div class="feat-text"><strong>Real-time Analytics</strong> — Track your progress and weak areas</div>
+      </div>
+      <div class="feat-item">
+        <span class="feat-icon">🏆</span>
+        <div class="feat-text"><strong>Gamification</strong> — XP, streaks, and badges to keep you motivated</div>
+      </div>
+      <div class="feat-item">
+        <span class="feat-icon">🎯</span>
+        <div class="feat-text"><strong>Smart Recommendations</strong> — Personalized next-lesson suggestions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth panel -->
+<div class="auth-panel">
+  <div class="auth-box">
+    <h2>Welcome back</h2>
+    <p class="subtitle">Sign in or create your account to continue</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn" onclick="switchTab('register')">Sign Up</button>
+    </div>
+
+    <!-- Login -->
+    <div class="auth-form active" id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary auth-btn" onclick="handleLogin()">Sign In →</button>
+    </div>
+
+    <!-- Register -->
+    <div class="auth-form" id="registerForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="regName" placeholder="Your Name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPassword" placeholder="Min 6 characters">
+      </div>
+      <div class="form-group">
+        <label>I am a...</label>
+        <div class="role-select">
+          <div class="role-option">
+            <input type="radio" name="role" id="roleStudent" value="student" checked>
+            <label for="roleStudent">
+              <span class="role-icon">🎓</span>
+              Student
+            </label>
+          </div>
+          <div class="role-option">
+            <input type="radio" name="role" id="roleInstructor" value="instructor">
+            <label for="roleInstructor">
+              <span class="role-icon">👨‍🏫</span>
+              Instructor
+            </label>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary auth-btn" onclick="handleRegister()">Create Account →</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  // Redirect if already logged in
+  if (localStorage.getItem('alp_token')) {
+    window.location.href = 'dashboard.html';
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => {
+      b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+    });
+    document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+    document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+  }
+
+  async function handleLogin() {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    if (!email || !password) return toast('Please fill all fields', 'error');
+    try {
+      const data = await api.login({ email, password });
+      saveSession(data.access_token, data.user);
+      toast('Welcome back! 👋', 'success');
+      setTimeout(() => {
+        window.location.href = data.user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      }, 700);
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  async function handleRegister() {
+    const name     = document.getElementById('regName').value.trim();
+    const email    = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const role     = document.querySelector('input[name="role"]:checked').value;
+    if (!name || !email || !password) return toast('Please fill all fields', 'error');
+    if (password.length < 6) return toast('Password must be at least 6 characters', 'error');
+    try {
+      const data = await api.register({ name, email, password, role });
+      saveSession(data.access_token, data.user);
+      toast('Account created! 🎉', 'success');
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
+    } catch(e) { toast(e.message, 'error'); }
+  }
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('loginForm').classList.contains('active')) handleLogin();
+      else handleRegister();
+    }
+  });
+</script>
+</body>
+</html>

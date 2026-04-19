@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — LearnPath</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; color: #fff;
+    }
+    .user-menu { display: flex; align-items: center; gap: 0.75rem; }
+    .skill-section { display: flex; gap: 2rem; align-items: center; }
+    .topic-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .topic-tag {
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .topic-tag.weak   { background: rgba(248,113,113,0.12); color: var(--danger); }
+    .topic-tag.strong { background: rgba(52,211,153,0.12);  color: var(--success); }
+    .quiz-score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .quiz-score-row:last-child { border-bottom: none; }
+    .score-pill {
+      padding: 0.2rem 0.65rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .score-pill.high   { background: rgba(52,211,153,0.15);  color: var(--success); }
+    .score-pill.medium { background: rgba(251,191,36,0.15);  color: var(--warning); }
+    .score-pill.low    { background: rgba(248,113,113,0.15); color: var(--danger); }
+    .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px,1fr)); gap: 1rem; margin-top: 1rem; }
+    .badge-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+    .badge-item .badge-icon { font-size: 1.8rem; display: block; margin-bottom: 0.4rem; }
+    .course-mini-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .course-mini-card:hover { border-color: var(--accent); }
+    .course-mini-icon { font-size: 1.8rem; }
+    .course-mini-info { flex: 1; }
+    .course-mini-title { font-weight: 600; font-size: 0.92rem; }
+    .course-mini-progress { font-size: 0.8rem; color: var(--text2); margin-top: 0.25rem; }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">Learn<span>Path</span></div>
+  <nav>
+    <a href="dashboard.html" class="active">🏠 Dashboard</a>
+    <a href="courses.html">📚 Courses</a>
+    <a href="progress.html">📊 Progress</a>
+  </nav>
+  <div style="margin-top:auto;">
+    <a href="#" onclick="logout()" style="color:var(--danger);">🚪 Logout</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="text-muted" id="greetingText">Good morning!</p>
+    </div>
+    <div class="user-menu">
+      <div class="avatar" id="avatarInitial">?</div>
+      <div>
+        <div id="userName" style="font-weight:600;font-size:0.92rem;"></div>
+        <div id="userRole" style="font-size:0.78rem;color:var(--text2);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="grid-4 mb-2" id="statCards">
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-value" id="xpValue">–</div>
+      <div class="stat-label">Total XP</div>
+      <div class="stat-sub">Keep learning!</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-value" id="streakValue">–</div>
+      <div class="stat-label">Day Streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-value" id="enrolledValue">–</div>
+      <div class="stat-label">Enrolled Courses</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🧠</div>
+      <div class="stat-value" id="skillValue">–</div>
+      <div class="stat-label">Skill Level</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Skill profile -->
+    <div class="card">
+      <h3 style="margin-bottom:1.2rem;">🎯 Skill Profile</h3>
+      <div class="skill-section">
+        <div class="skill-ring">
+          <canvas id="skillCanvas" width="120" height="120"></canvas>
+          <div class="ring-label">
+            <span id="skillPct">–</span>
+            <small>Skill</small>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div style="margin-bottom:1rem;">
+            <div class="text-muted" style="font-size:0.82rem;margin-bottom:0.4rem;">Weak Topics</div>
+            <div class="topic-tags" id="weakTopics">
+              <span style="color:var(--text3);font-size:0.85rem;">None identified yet</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-muted" style="font-size:0.82rem;margin-bottom:0.4rem;">Strong Topics</div>
+            <div class="topic-tags" id="strongTopics">
+              <span style="color:var(--text3);font-size:0.85rem;">Complete quizzes to see</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent quiz scores -->
+    <div class="card">
+      <h3 style="margin-bottom:1.2rem;">📝 Recent Quiz Scores</h3>
+      <div id="recentScores">
+        <div class="empty-state"><div class="empty-icon">🎯</div>No quizzes taken yet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2 mt-2">
+    <!-- Continue learning -->
+    <div class="card">
+      <div class="flex-between mb-2">
+        <h3>📖 Continue Learning</h3>
+        <a href="courses.html" class="btn btn-outline" style="font-size:0.82rem;padding:0.4rem 0.9rem;">All Courses</a>
+      </div>
+      <div id="enrolledCourses">
+        <div class="empty-state"><div class="empty-icon">🚀</div>Enroll in a course to get started!</div>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="card">
+      <h3 style="margin-bottom:1rem;">🏆 Badges</h3>
+      <div class="badge-grid" id="badgeGrid">
+        <div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">🎖️</div>Earn your first badge!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+  const user = requireAuth();
+  if (user) {
+    document.getElementById('avatarInitial').textContent = user.name[0].toUpperCase();
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('userRole').textContent = user.role;
+  }
+
+  const hour = new Date().getHours();
+  document.getElementById('greetingText').textContent =
+    hour < 12 ? 'Good morning! Ready to learn? 🌅' :
+    hour < 17 ? 'Good afternoon! Lets make progress 🌞' : 'Good evening! A great time to review 🌙';
+
+  async function loadDashboard() {
+    try {
+      const data = await api.dashboard();
+      const p = data.profile;
+
+      // Stats
+      document.getElementById('xpValue').textContent     = p.total_xp;
+      document.getElementById('streakValue').textContent = p.streak_days + 'd';
+      document.getElementById('enrolledValue').textContent = data.enrolled_courses;
+      document.getElementById('skillValue').textContent  = p.skill_level + '%';
+      document.getElementById('skillPct').textContent    = p.skill_level + '%';
+
+      // Skill ring
+      const canvas = document.getElementById('skillCanvas');
+      drawSkillRing(canvas, p.skill_level,
+        p.skill_level >= 70 ? '#34d399' : p.skill_level >= 40 ? '#fbbf24' : '#6c63ff');
+
+      // Topics
+      if (p.weak_topics && p.weak_topics.length) {
+        document.getElementById('weakTopics').innerHTML =
+          p.weak_topics.map(t => `<span class="topic-tag weak">⚠ ${t}</span>`).join('');
+      }
+      if (p.strong_topics && p.strong_topics.length) {
+        document.getElementById('strongTopics').innerHTML =
+          p.strong_topics.map(t => `<span class="topic-tag strong">✓ ${t}</span>`).join('');
+      }
+
+      // Quiz scores
+      if (data.recent_quiz_scores && data.recent_quiz_scores.length) {
+        document.getElementById('recentScores').innerHTML =
+          data.recent_quiz_scores.map(q => {
+            const cls = q.score >= 80 ? 'high' : q.score >= 50 ? 'medium' : 'low';
+            return `<div class="quiz-score-row">
+              <span>Lesson #${q.lesson_id}</span>
+              <span class="score-pill ${cls}">${q.score}%</span>
+            </div>`;
+          }).join('');
+      }
+
+      // Badges
+      if (data.badges && data.badges.length) {
+        document.getElementById('badgeGrid').innerHTML =
+          data.badges.map(b => `<div class="badge-item">
+            <span class="badge-icon">${b.icon}</span>${b.name}
+          </div>`).join('');
+      }
+
+      // Enrolled courses
+      const courses = await api.courses();
+      const enrolled = courses.filter(c => c.enrolled);
+      if (enrolled.length) {
+        document.getElementById('enrolledCourses').innerHTML =
+          enrolled.map(c => `
+            <div class="course-mini-card" onclick="window.location.href='course.html?id=${c.id}'">
+              <div class="course-mini-icon">📘</div>
+              <div class="course-mini-info">
+                <div class="course-mini-title">${c.title}</div>
+                <div class="course-mini-progress">${c.progress}% complete · ${c.lesson_count} lessons</div>
+                <div class="progress-bar-wrap mt-1">
+                  <div class="progress-bar-fill" style="width:${c.progress}%"></div>
+                </div>
+              </div>
+            </div>`).join('');
+      }
+    } catch(e) {
+      toast('Failed to load dashboard: ' + e.message, 'error');
+    }
+  }
+
+  loadDashboard();
+</script>
+</body>
+</html>
